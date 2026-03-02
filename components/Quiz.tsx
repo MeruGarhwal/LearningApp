@@ -80,6 +80,12 @@ export default function Quiz({
     onComplete?.(scorePercent, confidence);
   }, [allAnswered, answers, questions, total, user, topicId, onComplete, gamification]);
 
+  const correctIdForEffect = currentQuestion ? getCorrectOptionId(currentQuestion) : "";
+  const isCorrectForEffect = currentAnswer ? currentAnswer === correctIdForEffect : false;
+  useEffect(() => {
+    if (showImmediateFeedback && feedbackShown && isCorrectForEffect) playSuccess();
+  }, [showImmediateFeedback, feedbackShown, isCorrectForEffect]);
+
   if (questions.length === 0) {
     return (
       <div className={`rounded-xl border border-slate-200/80 p-4 ${className}`}>
@@ -149,10 +155,6 @@ export default function Quiz({
   const correctId = getCorrectOptionId(currentQuestion);
   const isCorrect = currentAnswer ? currentAnswer === correctId : false;
   const correctLabel = currentQuestion.options.find((o) => o.id === correctId)?.label ?? "";
-
-  useEffect(() => {
-    if (showImmediateFeedback && feedbackShown && isCorrect) playSuccess();
-  }, [showImmediateFeedback, feedbackShown, isCorrect]);
 
   const goNext = () => {
     setFeedbackShown(false);
