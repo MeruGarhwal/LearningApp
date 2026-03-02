@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useGamification } from "@/context/GamificationContext";
 import { updateProgress, getConfidenceLevel } from "@/lib/progress";
+import { XP_PER_QUIZ } from "@/lib/gamification";
+import { playSuccess } from "@/lib/sound";
 import type { QuizQuestion } from "@/lib/types";
 
 const CONFIDENCE_STYLES: Record<string, { bg: string; text: string }> = {
@@ -28,6 +31,7 @@ export default function Quiz({
   className = "",
 }: QuizProps) {
   const { user } = useAuth();
+  const gamification = useGamification();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -58,6 +62,10 @@ export default function Quiz({
     const scorePercent = total > 0 ? Math.round((correct / total) * 100) : 0;
     const confidence = getConfidenceLevel(scorePercent);
 
+    gamification?.addXP(XP_PER_QUIZ);
+    gamification?.awardBadge("first_quiz");
+    if (scorePercent >= 80) gamification?.awardBadge("science_warrior");
+
     if (user && topicId) {
       setSaving(true);
       try {
@@ -70,7 +78,7 @@ export default function Quiz({
       }
     }
     onComplete?.(scorePercent, confidence);
-  }, [allAnswered, answers, questions, total, user, topicId, onComplete]);
+  }, [allAnswered, answers, questions, total, user, topicId, onComplete, gamification]);
 
   if (questions.length === 0) {
     return (
@@ -100,6 +108,9 @@ export default function Quiz({
             className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${style.bg} ${style.text}`}
           >
             {confidence}
+          </span>
+          <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">
+            +{XP_PER_QUIZ} XP
           </span>
           {saving && (
             <span className="text-sm text-slate-500">Saving…</span>
@@ -138,6 +149,10 @@ export default function Quiz({
   const correctId = getCorrectOptionId(currentQuestion);
   const isCorrect = currentAnswer ? currentAnswer === correctId : false;
   const correctLabel = currentQuestion.options.find((o) => o.id === correctId)?.label ?? "";
+
+  useEffect(() => {
+    if (showImmediateFeedback && feedbackShown && isCorrect) playSuccess();
+  }, [showImmediateFeedback, feedbackShown, isCorrect]);
 
   const goNext = () => {
     setFeedbackShown(false);

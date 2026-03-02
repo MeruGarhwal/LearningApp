@@ -11,6 +11,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const question = typeof body?.question === "string" ? body.question.trim() : "";
+    const preferHindi = Boolean(body?.preferHindi);
 
     if (!question) {
       return NextResponse.json(
@@ -29,7 +30,8 @@ export async function POST(request: NextRequest) {
 
     const openai = new OpenAI({ apiKey });
 
-    const userPrompt = `Explain this to a CBSE Class 6 student in very simple language with one example: ${question}`;
+    const langHint = preferHindi ? " Respond in Hindi (हिंदी में)." : "";
+    const userPrompt = `Explain this to a CBSE Class 6 student in very simple language with one example: ${question}${langHint}`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",

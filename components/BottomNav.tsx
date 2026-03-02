@@ -27,11 +27,13 @@ export default function BottomNav() {
           <span className="text-xs font-semibold">Quiz</span>
         </Link>
         <Link
-          href="/"
-          className="flex flex-col items-center gap-1 rounded-xl px-5 py-2 text-slate-500 transition-all hover:text-slate-700"
+          href="/settings"
+          className={`flex flex-col items-center gap-1 rounded-xl px-5 py-2 transition-all ${
+            pathname === "/settings" ? "text-blue-600" : "text-slate-500 hover:text-slate-700"
+          }`}
         >
           <span className="text-xl">⚙️</span>
-          <span className="text-xs font-semibold">Home</span>
+          <span className="text-xs font-semibold">Settings</span>
         </Link>
       </div>
     </nav>

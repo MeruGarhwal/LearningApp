@@ -5,6 +5,9 @@ import Quiz from "@/components/Quiz";
 import DoubtBox from "@/components/DoubtBox";
 import ChapterHook from "@/components/ChapterHook";
 import ConceptMap from "@/components/ConceptMap";
+import ConceptCard from "@/components/ConceptCard";
+import ConceptPlayground from "@/components/ConceptPlayground";
+import QuickCheck from "@/components/QuickCheck";
 import type { QuizQuestion } from "@/lib/types";
 
 const PHYSICS_CHAPTERS: Record<
@@ -201,6 +204,34 @@ export default async function PhysicsChapterPage({ params }: PageProps) {
             videoTitle={`${chapter.name} – Intro`}
           />
 
+          {/* Concept cards — tap to reveal */}
+          <section className="animate-slide-up opacity-0 [animation-fill-mode:forwards]" style={{ animationDelay: "0.2s" }}>
+            <h2 className="mb-3 text-lg font-semibold text-slate-800">Concept cards</h2>
+            <p className="mb-4 text-sm text-slate-600">Tap a card to expand and read more.</p>
+            <div className="space-y-3">
+              <ConceptCard
+                emoji="🧲"
+                title="Key idea 1"
+                summary={chapter.topics[0]?.title ?? "Main concept"}
+                detail={chapter.topics[0]?.explanation ?? "Expand to learn more."}
+              />
+              <ConceptCard
+                emoji="💡"
+                title="Key idea 2"
+                summary={chapter.topics[1]?.title ?? "Second concept"}
+                detail={chapter.topics[1]?.explanation ?? "Tap to see details."}
+              />
+            </div>
+          </section>
+
+          {/* Playground — interactive experiment */}
+          <section className="animate-slide-up opacity-0 [animation-fill-mode:forwards]" style={{ animationDelay: "0.25s" }}>
+            <ConceptPlayground
+              type={slug === "measurement-of-length-and-motion" ? "force" : "drop"}
+              title={slug === "measurement-of-length-and-motion" ? "Force & motion" : "Which falls faster?"}
+            />
+          </section>
+
           {chapter.topics.map((topic, idx) => (
             <section
               key={topic.id}
@@ -215,6 +246,28 @@ export default async function PhysicsChapterPage({ params }: PageProps) {
                 {topic.title}
               </h2>
               <div className="space-y-5">
+                {idx === 0 && slug === "measurement-of-length-and-motion" && (
+                  <QuickCheck
+                    question="Which falls faster in air — a feather or a stone?"
+                    options={[
+                      { id: "feather", label: "Feather 🪶" },
+                      { id: "stone", label: "Stone 🪨" },
+                      { id: "same", label: "Same", correct: true },
+                    ]}
+                    revealText="In air, the stone falls faster because air resistance slows the feather. In a vacuum (no air), both fall at the same rate!"
+                  />
+                )}
+                {idx === 0 && slug === "exploring-magnets" && (
+                  <QuickCheck
+                    question="Which of these is attracted to a magnet?"
+                    options={[
+                      { id: "wood", label: "Wood" },
+                      { id: "iron", label: "Iron", correct: true },
+                      { id: "plastic", label: "Plastic" },
+                    ]}
+                    revealText="Iron is magnetic! Wood and plastic are not. Only certain materials like iron, nickel, and cobalt are attracted to magnets."
+                  />
+                )}
                 <VideoPlayer
                   title={`${topic.title} – Video`}
                   topicId={`physics-${slug}-${topic.id}`}
@@ -250,10 +303,10 @@ export default async function PhysicsChapterPage({ params }: PageProps) {
 
         <p className="mt-10">
           <Link
-            href="/chapter"
+            href="/"
             className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
           >
-            ← Back to Lesson Map
+            ← Back to home
           </Link>
         </p>
       </main>

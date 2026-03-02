@@ -17,6 +17,7 @@ export default function DoubtBox({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [answer, setAnswer] = useState<string | null>(null);
+  const [preferHindi, setPreferHindi] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +32,7 @@ export default function DoubtBox({
       const res = await fetch("/api/ask-doubt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: trimmed }),
+        body: JSON.stringify({ question: trimmed, preferHindi }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -59,6 +60,15 @@ export default function DoubtBox({
   return (
     <div className={className}>
       <form onSubmit={handleSubmit} className="space-y-2">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+          <input
+            type="checkbox"
+            checked={preferHindi}
+            onChange={(e) => setPreferHindi(e.target.checked)}
+            className="rounded border-slate-300 accent-blue-500"
+          />
+          Explain in Hindi (हिंदी में)
+        </label>
         <div className="flex gap-2">
           <input
             type="text"
