@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 const SYSTEM_PROMPT = `You are a friendly tutor for CBSE Class 6 students. 
 - Use very simple vocabulary.
 - Keep your answer to a maximum of 150 words.
@@ -23,12 +19,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!process.env.OPENAI_API_KEY) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
       return NextResponse.json(
         { error: "OpenAI API key is not configured" },
         { status: 503 }
       );
     }
+
+    const openai = new OpenAI({ apiKey });
 
     const userPrompt = `Explain this to a CBSE Class 6 student in very simple language with one example: ${question}`;
 
