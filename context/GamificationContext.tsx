@@ -35,8 +35,6 @@ type GamificationContextType = {
 
 const GamificationContext = createContext<GamificationContextType | null>(null);
 
-const XP_LEVEL_STEP = 200;
-
 export function GamificationProvider({ children }: { children: React.ReactNode }) {
   const [xp, setXp] = useState(0);
   const [badges, setBadges] = useState<BadgeId[]>([]);
@@ -67,7 +65,7 @@ export function GamificationProvider({ children }: { children: React.ReactNode }
   const clearLastEarnedBadge = useCallback(() => setLastEarnedBadge(null), []);
 
   const { level, title: levelTitle, xpInLevel } = getLevelFromXP(xp);
-  const xpForNextLevel = XP_LEVEL_STEP; // 200
+  const xpForNextLevel = XP_LEVEL_STEP;
 
   const value: GamificationContextType = {
     xp,
