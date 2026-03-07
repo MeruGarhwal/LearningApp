@@ -54,3 +54,4 @@ Open [http://localhost:3000](http://localhost:3000).
 - **Deploy on Vercel (beginner-friendly):** See [DEPLOY_VERCEL_SIMPLE.md](./DEPLOY_VERCEL_SIMPLE.md) for a simple guide (GitHub → Vercel → env vars → Firebase authorized domains).
 - **Environment variables:** See `.env.example` for required vars. Never commit secrets. `OPENAI_API_KEY` is server-only; Firebase uses `NEXT_PUBLIC_*`.
 - **Technical details:** [DEPLOYMENT.md](./DEPLOYMENT.md) and [VERCEL_DEPLOY_CHECKLIST.md](./VERCEL_DEPLOY_CHECKLIST.md).
+"# student-learning-platform" 
